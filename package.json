@@ -1,7 +1,7 @@
 {
-  "name": "discord.js",
+  "name": "archaeon",
   "version": "11.6.4",
-  "description": "A powerful library for interacting with the Discord API",
+  "description": "discord.js v11 fork",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
   "scripts": {

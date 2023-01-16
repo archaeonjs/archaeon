@@ -1,16 +1,16 @@
-const Constants = require('../util/Constants');
-const Util = require('../util/Util');
-const Guild = require('../structures/Guild');
-const User = require('../structures/User');
-const Emoji = require('../structures/Emoji');
-const GuildChannel = require('../structures/GuildChannel');
-const TextChannel = require('../structures/TextChannel');
-const VoiceChannel = require('../structures/VoiceChannel');
-const CategoryChannel = require('../structures/CategoryChannel');
-const NewsChannel = require('../structures/NewsChannel');
-const StoreChannel = require('../structures/StoreChannel');
-const DMChannel = require('../structures/DMChannel');
-const GroupDMChannel = require('../structures/GroupDMChannel');
+const Constants = require("../util/Constants");
+const Util = require("../util/Util");
+const Guild = require("../structures/Guild");
+const User = require("../structures/User");
+const Emoji = require("../structures/Emoji");
+const GuildChannel = require("../structures/GuildChannel");
+const TextChannel = require("../structures/TextChannel");
+const VoiceChannel = require("../structures/VoiceChannel");
+const CategoryChannel = require("../structures/CategoryChannel");
+const NewsChannel = require("../structures/NewsChannel");
+const StoreChannel = require("../structures/StoreChannel");
+const DMChannel = require("../structures/DMChannel");
+const GroupDMChannel = require("../structures/GroupDMChannel");
 
 class ClientDataManager {
   constructor(client) {
@@ -32,7 +32,9 @@ class ClientDataManager {
        * @param {Guild} guild The created guild
        */
       if (this.client.options.fetchAllMembers) {
-        guild.fetchMembers().then(() => { this.client.emit(Constants.Events.GUILD_CREATE, guild); });
+        guild.fetchMembers().then(() => {
+          this.client.emit(Constants.Events.GUILD_CREATE, guild);
+        });
       } else {
         this.client.emit(Constants.Events.GUILD_CREATE, guild);
       }
@@ -76,6 +78,8 @@ class ClientDataManager {
           case Constants.ChannelTypes.STORE:
             channel = new StoreChannel(guild, data);
             break;
+          default:
+            return null;
         }
 
         guild.channels.set(channel.id, channel);
@@ -83,7 +87,8 @@ class ClientDataManager {
     }
 
     if (channel && !already) {
-      if (this.pastReady) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
+      if (this.pastReady)
+        this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       this.client.channels.set(channel.id, channel);
       return channel;
     } else if (already) {
@@ -116,7 +121,8 @@ class ClientDataManager {
   killGuild(guild) {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
-    if (already && this.pastReady) this.client.emit(Constants.Events.GUILD_DELETE, guild);
+    if (already && this.pastReady)
+      this.client.emit(Constants.Events.GUILD_DELETE, guild);
   }
 
   killUser(user) {
@@ -125,13 +131,15 @@ class ClientDataManager {
 
   killChannel(channel) {
     this.client.channels.delete(channel.id);
-    if (channel instanceof GuildChannel) channel.guild.channels.delete(channel.id);
+    if (channel instanceof GuildChannel)
+      channel.guild.channels.delete(channel.id);
   }
 
   updateGuild(currentGuild, newData) {
     const oldGuild = Util.cloneObject(currentGuild);
     currentGuild.setup(newData);
-    if (this.pastReady) this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
+    if (this.pastReady)
+      this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
   }
 
   updateChannel(currentChannel, newData) {
@@ -141,7 +149,11 @@ class ClientDataManager {
   updateEmoji(currentEmoji, newData) {
     const oldEmoji = Util.cloneObject(currentEmoji);
     currentEmoji.setup(newData);
-    this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
+    this.client.emit(
+      Constants.Events.GUILD_EMOJI_UPDATE,
+      oldEmoji,
+      currentEmoji
+    );
     return currentEmoji;
   }
 }
